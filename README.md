@@ -22,3 +22,13 @@ err := Update(&c)
 
 fmt.Println("ENV_ONE: ", c.EnvOne) // apples
 ```
+
+#### Set Defaults
+Using a `:` colon to set defaults, 
+the environment variable is on the left side & the default is on the right side.
+```go
+type Config struct {
+    EnvOne string `env_conf:"ENV_ONE:bananas"`
+}
+// If `ENV_ONE` does not exist then `EnvOne` will equal bananas
+```
