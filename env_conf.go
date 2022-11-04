@@ -2,6 +2,7 @@ package env_conf
 
 import (
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"strings"
@@ -40,10 +41,20 @@ func Update(c interface{}) error {
 			f.SetString(env)
 		} else {
 			tagSplit := strings.Split(tag, ":")
-			if len(tagSplit) == 1 {
-				return nil
-			} else {
-				f.SetString(tagSplit[1])
+			if len(tagSplit) > 1 {
+				// handle multiple colons in default tag value
+				if len(tagSplit) > 2 {
+					for i = 1; i < len(tagSplit); i++ {
+						if i == 1 {
+							env += tagSplit[i]
+						} else {
+							env += fmt.Sprintf(":%s", tagSplit[i])
+						}
+					}
+					f.SetString(env)
+				} else {
+					f.SetString(tagSplit[1])
+				}
 			}
 		}
 	}
