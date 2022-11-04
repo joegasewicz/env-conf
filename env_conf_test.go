@@ -13,7 +13,7 @@ func TestUpdate(t *testing.T) {
 	type Config struct {
 		EnvOne   string `env_conf:"ENV_ONE"`
 		EnvTwo   string `env_conf:"ENV_TWO:plums"`
-		EnvThree string `env_conf:"ENV_THREE:peaches"`
+		EnvThree string `env_conf:"ENV_THREE:http://127.0.0.1:8080"`
 	}
 
 	c := Config{}
@@ -34,8 +34,8 @@ func TestUpdate(t *testing.T) {
 	}
 
 	// Check defaults
-	if c.EnvThree != "peaches" {
-		t.Logf("expected peaches but got %s", c.EnvThree)
+	if c.EnvThree != "http://127.0.0.1:8080" {
+		t.Logf("expected http://127.0.0.1:8080 but got %s", c.EnvThree)
 		t.Fail()
 	}
 
