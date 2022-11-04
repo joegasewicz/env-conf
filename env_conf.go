@@ -6,7 +6,19 @@ import (
 	"reflect"
 )
 
-// Update
+// Update If an environment variable returns an empty string then the default config
+// struct member will not be overridden.
+//
+//	os.Setenv("ENV_ONE", "apples")
+//	os.Setenv("ENV_TWO", "bananas")
+//
+//	type Config struct {
+//		EnvOne string `env_conf:"ENV_ONE"`
+//		EnvTwo string `env_conf:"ENV_TWO"`
+//	}
+//
+//	c := Config{}
+//	err := Update(&c)
 func Update(c interface{}) error {
 	t := reflect.TypeOf(c)
 	v := reflect.ValueOf(c)
@@ -16,7 +28,7 @@ func Update(c interface{}) error {
 	}
 	e := v.Elem()
 	te := t.Elem()
-	// create map
+
 	for i := 0; i < e.NumField(); i++ {
 		f := e.Field(i)
 		tag := te.Field(i).Tag.Get("env_conf")
