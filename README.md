@@ -2,7 +2,7 @@
 Grabs environmental variables &amp; maps them to your config type via struct tags
 
 ```
-go get -u 
+go get -u github.com/joegasewicz/env-conf
 ```
 
 ### Usage
