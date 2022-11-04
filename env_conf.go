@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+const TAG_NAME = "env_conf"
+
 // Update If an environment variable returns an empty string then the default config
 // struct member will not be overridden.
 //
@@ -22,8 +24,6 @@ import (
 //	c := Config{}
 //	err := Update(&c)
 func Update(c interface{}) error {
-	var env string
-	tagName := "env_conf"
 	t := reflect.TypeOf(c)
 	v := reflect.ValueOf(c)
 	// c must be a pointer
@@ -32,26 +32,34 @@ func Update(c interface{}) error {
 	}
 	e := v.Elem()
 	te := t.Elem()
+	count := e.NumField()
 
-	for i := 0; i < e.NumField(); i++ {
+	for i := 0; i < count; i++ {
 		f := e.Field(i)
-		tag := te.Field(i).Tag.Get(tagName)
-		env = os.Getenv(tag)
-		if env != "" {
-			f.SetString(env)
+		tag := te.Field(i).Tag.Get(TAG_NAME)
+		tagSplit := strings.Split(tag, ":")
+		if len(tagSplit) == 1 {
+			env := os.Getenv(tag)
+			if env != "" {
+				f.SetString(env)
+			}
 		} else {
-			tagSplit := strings.Split(tag, ":")
-			if len(tagSplit) > 1 {
+			// handle env var exists
+			env := os.Getenv(tagSplit[0])
+			if env != "" {
+				f.SetString(env)
+			} else {
 				// handle multiple colons in default tag value
+				var defaultVal string
 				if len(tagSplit) > 2 {
-					for i = 1; i < len(tagSplit); i++ {
-						if i == 1 {
-							env += tagSplit[i]
+					for j := 1; j < len(tagSplit); j++ {
+						if j == 1 {
+							defaultVal += tagSplit[j]
 						} else {
-							env += fmt.Sprintf(":%s", tagSplit[i])
+							defaultVal += fmt.Sprintf(":%s", tagSplit[j])
 						}
 					}
-					f.SetString(env)
+					f.SetString(defaultVal)
 				} else {
 					f.SetString(tagSplit[1])
 				}
