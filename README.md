@@ -18,7 +18,7 @@ type Config struct {
 }
 
 c := Config{}
-err := Update(&c)
+err := env_conf.Update(&c)
 
 fmt.Println("ENV_ONE: ", c.EnvOne) // apples
 ```
@@ -28,7 +28,7 @@ Using a `:` colon to set defaults,
 the environment variable is on the left side & the default is on the right side.
 ```go
 type Config struct {
-    EnvOne string `env_conf:"ENV_ONE:bananas"`
+    EnvOne string `env_conf:"ENV_ONE:http://127.0.0.1:8080"`
 }
-// If `ENV_ONE` does not exist then `EnvOne` will equal bananas
+// If `ENV_ONE` does not exist then `EnvOne` will equal http://127.0.0.1:8080
 ```
